@@ -44,6 +44,16 @@ namespace CryptoTrackerAPI.Controllers
         {
             transaction.CryptoCode = transaction.CryptoCode.ToLower();
 
+            // Buenas prácticas para base de datos: Asegurar formato de fecha UTC para evitar errores 500 de parseo
+            if (transaction.Datetime == default)
+            {
+                transaction.Datetime = DateTime.UtcNow;
+            }
+            else
+            {
+                transaction.Datetime = DateTime.SpecifyKind(transaction.Datetime, DateTimeKind.Utc);
+            }
+
             // Si es venta, valido que tenga fondos suficientes
             if (transaction.Action.ToLower() == "sale")
             {
@@ -65,8 +75,7 @@ namespace CryptoTrackerAPI.Controllers
                 }
             }
 
-            // CONSULTA A API EXTERNA: Obtengo el precio en tiempo real
-            string url = $"https://criptoya.com/api/satoshitango/{transaction.CryptoCode}/ars";
+            string url = $"https://criptoya.com/api/binance/{transaction.CryptoCode}/ars/1";
 
             try
             {
@@ -79,9 +88,15 @@ namespace CryptoTrackerAPI.Controllers
                     // Calculo el dinero total en ARS automáticamente en el backend
                     transaction.Money = transaction.CryptoAmount * price;
                 }
+                else
+                {
+                    return StatusCode(502, new { message = "El proveedor de precios devolvió una respuesta vacía." });
+                }
             }
-            catch
+            catch (Exception ex)
             {
+                // Dejamos un log interno en la consola de Visual Studio para que puedas debuggear si vuelve a fallar
+                Console.WriteLine($"[CriptoYa Error]: {ex.Message}");
                 return StatusCode(500, new { message = "Error al conectar con el proveedor de precios (CriptoYa)." });
             }
 

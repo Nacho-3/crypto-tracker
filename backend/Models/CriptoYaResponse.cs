@@ -2,7 +2,10 @@
 {
     public class CriptoYaResponse
     {
-        public decimal Ask { get; set; } //precio venta
-        public decimal Bid { get; set; } //precio compra
+        [System.Text.Json.Serialization.JsonPropertyName("ask")]
+        public decimal Ask { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("bid")]
+        public decimal Bid { get; set; }
     }
 }
