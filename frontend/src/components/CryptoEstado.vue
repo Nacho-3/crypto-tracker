@@ -51,20 +51,51 @@ defineProps({
   </div>
 </template>
 <style scoped>
+
 .card {
   background: white;
   padding: 24px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-h2 { color: #333; margin-bottom: 4px; }
-.subtitle { color: #666; font-size: 14px; margin-bottom: 24px; }
-table { width: 100%; border-collapse: collapse; text-align: left; }
-th { background-color: #eef2ff; color: #4338ca; padding: 12px; font-size: 14px; text-transform: uppercase; border-bottom: 2px solid #c7d2fe; }
-td { padding: 12px; border-bottom: 1px solid #e4e4e7; }
-.crypto-title { font-weight: bold; text-transform: uppercase; color: #4f46e5; }
-.font-mono { font-family: monospace; }
-.text-green { color: #16a34a; font-weight: bold; }
+h2 { color: #333;
+   margin-bottom: 4px;}
+
+.subtitle { 
+  color: #666; 
+  font-size: 14px; 
+  margin-bottom: 24px;}
+
+table { 
+  width: 100%; 
+  border-collapse: 
+  collapse; 
+  text-align: left; }
+
+th { 
+  background-color: #eef2ff; 
+  color: #4338ca; 
+  padding: 12px; 
+  font-size: 14px; 
+  text-transform: uppercase; 
+  border-bottom: 2px solid #c7d2fe; }
+
+td { 
+  padding: 12px; 
+  border-bottom: 1px solid #e4e4e7; }
+
+.crypto-title { 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  color: #4f46e5; }
+
+.font-mono { 
+  font-family: monospace; }
+
+.text-green { 
+  color: #16a34a; 
+  font-weight: bold; }
+
 .total-box {
   background: #4f46e5;
   color: white;
@@ -75,6 +106,14 @@ td { padding: 12px; border-bottom: 1px solid #e4e4e7; }
   align-items: center;
   margin-top: 24px;
 }
-.total-amount { font-size: 24px; font-weight: bold; font-family: monospace; }
-.empty { color: #71717a; padding: 20px; text-align: center; }
+
+.total-amount { 
+  font-size: 24px; 
+  font-weight: bold; 
+  font-family: monospace; }
+
+.empty { 
+  color: #71717a;
+  padding: 20px; 
+  text-align: center; }
 </style>

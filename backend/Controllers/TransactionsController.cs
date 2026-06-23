@@ -19,7 +19,7 @@ namespace CryptoTrackerAPI.Controllers
             _httpClient = httpClient; // Uso HttpClient para pegarle a CriptoYa
         }
 
-        // Endpoint GET: api/transactions (Historial completo ordenado)
+        // Endpoint GET: api/transactions 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Transaction>>> GetHistory()
         {
@@ -29,7 +29,7 @@ namespace CryptoTrackerAPI.Controllers
             return Ok(history);
         }
 
-        // Endpoint GET: api/transactions/{id} (Ver detalle de una sola)
+        // Endpoint GET: api/transactions/{id} 
         [HttpGet("{id}")]
         public async Task<ActionResult<Transaction>> GetTransaction(int id)
         {
@@ -38,13 +38,13 @@ namespace CryptoTrackerAPI.Controllers
             return Ok(transaction);
         }
 
-        // Endpoint POST: api/transactions (Crear transacción con validación de CriptoYa)
+        // Endpoint POST: api/transactions 
         [HttpPost]
         public async Task<ActionResult<Transaction>> CreateTransaction([FromBody] Transaction transaction)
         {
             transaction.CryptoCode = transaction.CryptoCode.ToLower();
 
-            // Buenas prácticas para base de datos: Asegurar formato de fecha UTC para evitar errores 500 de parseo
+            // Aseguro formato de fecha UTC para evitar errores 500 de parseo
             if (transaction.Datetime == default)
             {
                 transaction.Datetime = DateTime.UtcNow;
@@ -54,10 +54,10 @@ namespace CryptoTrackerAPI.Controllers
                 transaction.Datetime = DateTime.SpecifyKind(transaction.Datetime, DateTimeKind.Utc);
             }
 
-            // Si es venta, valido que tenga fondos suficientes
+            // si es venta valido que tenga fondos suficientes
             if (transaction.Action.ToLower() == "sale")
             {
-                // Sumo lo comprado y resto lo vendido de esa cripto específica
+                // sumo lo comprado y resto lo vendido de esa cripto específica
                 var totalPurchased = await _context.Transactions
                     .Where(t => t.CryptoCode == transaction.CryptoCode && t.Action == "purchase")
                     .SumAsync(t => t.CryptoAmount);
@@ -82,10 +82,10 @@ namespace CryptoTrackerAPI.Controllers
                 var response = await _httpClient.GetFromJsonAsync<CriptoYaResponse>(url);
                 if (response != null)
                 {
-                    // Si compro, pago el precio 'ask'. Si vendo, cobro el 'bid'
+                    // si compro, pago el precio 'ask'. Si vendo, cobro el 'bid'
                     decimal price = transaction.Action.ToLower() == "purchase" ? response.Ask : response.Bid;
 
-                    // Calculo el dinero total en ARS automáticamente en el backend
+                    // calculo el dinero total en ARS
                     transaction.Money = transaction.CryptoAmount * price;
                 }
                 else
@@ -95,19 +95,17 @@ namespace CryptoTrackerAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Dejamos un log interno en la consola de Visual Studio para que puedas debuggear si vuelve a fallar
                 Console.WriteLine($"[CriptoYa Error]: {ex.Message}");
                 return StatusCode(500, new { message = "Error al conectar con el proveedor de precios (CriptoYa)." });
             }
 
-            // Si todo está bien guardo
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetTransaction), new { id = transaction.Id }, transaction);
         }
 
-        // Endpoint PATCH: api/transactions/{id} (Modificación directa del registro)
+        // Endpoint PATCH: api/transactions/{id}
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateTransaction(int id, [FromBody] Transaction updatedData)
         {
@@ -123,7 +121,7 @@ namespace CryptoTrackerAPI.Controllers
             return Ok(transaction);
         }
 
-        // Endpoint DELETE: api/transactions/{id} (Eliminación)
+        // Endpoint DELETE: api/transactions/{id} 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransaction(int id)
         {
@@ -141,13 +139,13 @@ namespace CryptoTrackerAPI.Controllers
         {
             var allTransactions = await _context.Transactions.ToListAsync();
 
-            // Agrupo por criptomoneda
+            // agrupo por criptomoneda
             var wallet = allTransactions
                 .GroupBy(t => t.CryptoCode)
                 .Select(g => new
                 {
                     CryptoCode = g.Key,
-                    // Calculo cantidad que posee el usuario (Compras - Ventas)
+                    // calculo cantidad que posee el usuario (Compras - Ventas)
                     CurrentAmount = g.Where(t => t.Action == "purchase").Sum(t => t.CryptoAmount)
                                   - g.Where(t => t.Action == "sale").Sum(t => t.CryptoAmount)
                 })
@@ -159,14 +157,13 @@ namespace CryptoTrackerAPI.Controllers
 
             foreach (var item in wallet)
             {
-                // Vuelvo a consultar a CriptoYa para saber cuánto valen HOY esas monedas
-                string url = $"https://criptoya.com/api/satoshitango/{item.CryptoCode}/ars";
+                // vuelvo a consultar a CriptoYa para saber cuánto valen HOY esas monedas
+                string url = $"https://criptoya.com/api/binance/{item.CryptoCode}/ars/1";
                 decimal currentPriceARS = 0;
 
                 try
                 {
                     var response = await _httpClient.GetFromJsonAsync<CriptoYaResponse>(url);
-                    // Uso 'bid' porque es el valor al que el usuario podría vender su posición actual
 
                     if (response != null) currentPriceARS = response.Bid;
                 }
@@ -187,7 +184,7 @@ namespace CryptoTrackerAPI.Controllers
             return Ok(new
             {
                 assets = result,
-                total_wallet_value_ars = totalWalletValueARS // Valor de toda la cartera sumada
+                total_wallet_value_ars = totalWalletValueARS // valor de toda la cartera sumada
             });
         }
     }

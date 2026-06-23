@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-// 1. Importamos tus 3 componentes customizados
 import CryptoHistorial from './components/CryptoHistorial.vue';
 import CryptoFormulario from './components/CryptoFormulario.vue';
 import CryptoEstado from './components/CryptoEstado.vue';
@@ -16,10 +15,8 @@ const estadoBilletera = ref({
   total_wallet_value_ars: 0
 });
 
-// --- MÉTODOS DE CONEXIÓN CON EL BACKEND (FETCH) ---
-
-// LLAMADO GET: Trae todo el historial de la API al cargar la página
-const cargarHistorial = async () => {
+// GET: obtiene el historial de transacciones
+const cargarHistorial = async () => { 
   try {
     const res = await fetch(API_BASE);
     if (res.ok) {
@@ -30,13 +27,12 @@ const cargarHistorial = async () => {
   }
 };
 
-// LLAMADO POST / PATCH: Guarda o edita de forma cruda
+// POST / PATCH: guarda o edita una transacción
 const dectectarGuardar = async (formData) => {
   try {
     let url = API_BASE;
     let method = 'POST';
     
-    // Si hay una transacción seleccionada previa, modificamos mediante PATCH
     if (transaccionSeleccionada.value) {
       url = `${API_BASE}/${transaccionSeleccionada.value.id}`;
       method = 'PATCH';
@@ -49,7 +45,7 @@ const dectectarGuardar = async (formData) => {
     });
 
     if (res.ok) {
-      alert(transaccionSeleccionada.value ? "Modificación cruda guardada correctamente." : "Operación registrada con éxito.");
+      alert(transaccionSeleccionada.value ? "Transacción modificada correctamente." : "Operación registrada con éxito.");
       vistaActual.value = 'historial';
       cargarHistorial(); // Refrescamos la tabla
     } else {
@@ -62,7 +58,7 @@ const dectectarGuardar = async (formData) => {
   }
 };
 
-// LLAMADO DELETE: Elimina un registro de la base de datos por ID
+// DELETE: Elimina un registro de la base de datos por ID
 const eliminarTransaccion = async (id) => {
   if (confirm("¿Estás seguro de que deseas eliminar permanentemente esta transacción?")) {
     try {
@@ -76,7 +72,7 @@ const eliminarTransaccion = async (id) => {
   }
 };
 
-// LLAMADO GET TO ENDPOINT /STATUS: Trae las cotizaciones de Criptoya y montos netos
+// GET: Trae las cotizaciones de Criptoya y montos netos
 const cargarEstadoActual = async () => {
   vistaActual.value = 'estado';
   try {
@@ -89,7 +85,6 @@ const cargarEstadoActual = async () => {
   }
 };
 
-// --- CONTROLADORES DE INTERFAZ ---
 const abrirFormularioNuevo = () => {
   transaccionSeleccionada.value = null;
   vistaActual.value = 'formulario';
@@ -110,7 +105,6 @@ const verDetalle = (t) => {
         `• Fecha cargada: ${new Date(t.datetime).toLocaleString()}`);
 };
 
-// Hook de inicio: Pide las transacciones automáticamente al abrir la app
 onMounted(() => {
   cargarHistorial();
 });
@@ -120,7 +114,7 @@ onMounted(() => {
   <div class="app-layout">
     <header class="main-header">
       <h1>Crypto Wallet Tracker</h1>
-      <p class="subtitle">Trabajo Final (Vite + Vue 3) - Programación III</p>
+      <p class="subtitle">Trabajo Final (.NET + Vue 3) - Programación III</p>
     </header>
 
     <nav class="nav-tabs">

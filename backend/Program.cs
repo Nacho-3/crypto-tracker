@@ -19,7 +19,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configuro CORS para permitir peticiones desde el Frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -44,7 +43,6 @@ builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-// Configuro el pipeline de peticiones HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

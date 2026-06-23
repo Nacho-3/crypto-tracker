@@ -83,10 +83,14 @@ const enviarFormulario = () => {
   max-width: 500px;
   margin: 0 auto;
 }
-h2 { color: #333; margin-bottom: 20px; }
+h2 {
+   color: #333; 
+   margin-bottom: 20px; }
+
 .form-group {
   margin-bottom: 16px;
 }
+
 label {
   display: block;
   font-size: 14px;
@@ -94,6 +98,7 @@ label {
   margin-bottom: 6px;
   font-weight: 500;
 }
+
 input, select {
   width: 100%;
   padding: 10px;
@@ -102,16 +107,19 @@ input, select {
   box-sizing: border-box;
   font-size: 14px;
 }
+
 input:disabled, select:disabled {
   background-color: #f4f4f5;
   color: #a1a1aa;
 }
+
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
 }
+
 .btn {
   padding: 10px 16px;
   border: none;
@@ -119,6 +127,12 @@ input:disabled, select:disabled {
   font-weight: 500;
   cursor: pointer;
 }
-.btn-cancelar { background: #e4e4e7; color: #333; }
-.btn-guardar { background: #4f46e5; color: white; }
+
+.btn-cancelar { 
+  background: #e4e4e7;
+  color: #333; }
+  
+.btn-guardar { 
+  background: #4f46e5; 
+  color: white; }
 </style>
